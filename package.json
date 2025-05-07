@@ -63,8 +63,8 @@
     "axios": "^1.4.0",
     "chalk": "^5.2.0",
     "cheerio": "^1.0.0-rc.12",
-    "commander": "^11.0.0",
-    "ora": "^6.3.1",
+    "commander": "^13.1.0",
+    "ora": "^8.2.0",
     "table": "^6.8.1"
   },
   "devDependencies": {
