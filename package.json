@@ -1,0 +1,91 @@
+{
+  "name": "gh-trends",
+  "version": "0.0.1",
+  "description": "AI-powered CLI tool for analyzing GitHub trending repositories and URL metadata",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "gh-trends": "./dist/cli.cjs"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc && tsup",
+    "lint": "eslint . && npm run lint:lockfile",
+    "lint:fix": "eslint . --fix",
+    "lint:lockfile": "lockfile-lint --path package-lock.json --validate-https --allowed-hosts npm yarn",
+    "test": "c8 node --loader ts-node/esm --test __tests__/**",
+    "test:watch": "c8 node --loader ts-node/esm --test --watch __tests__/**",
+    "coverage:view": "open coverage/lcov-report/index.html",
+    "version": "changeset version",
+    "release": "changeset publish"
+  },
+  "author": {
+    "name": "zjy365",
+    "email": "3161362058@qq.com",
+    "url": "https://github.com/zjy365"
+  },
+  "publishConfig": {
+    "provenance": true,
+    "access": "public"
+  },
+  "license": "Apache-2.0",
+  "keywords": [
+    "github",
+    "trending",
+    "repositories",
+    "url",
+    "metadata",
+    "cli",
+    "analysis",
+    "ai",
+    "developer-tools"
+  ],
+  "homepage": "",
+  "bugs": {
+    "url": "https://github.com/zjy365/gh-trends/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zjy365/gh-trends"
+  },
+  "dependencies": {
+    "axios": "^1.4.0",
+    "chalk": "^5.2.0",
+    "cheerio": "^1.0.0-rc.12",
+    "commander": "^11.0.0",
+    "ora": "^6.3.1",
+    "table": "^6.8.1"
+  },
+  "devDependencies": {
+    "@changesets/changelog-github": "^0.5.0",
+    "@changesets/cli": "^2.27.7",
+    "@types/node": "^20.14.10",
+    "c8": "^10.1.2",
+    "eslint": "^9.6.0",
+    "eslint-plugin-security": "^3.0.1",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.7",
+    "lockfile-lint": "^4.14.0",
+    "neostandard": "^0.11.0",
+    "ts-node": "^10.9.2",
+    "tsup": "^8.1.0",
+    "typescript": "^5.5.3",
+    "validate-conventional-commit": "^1.0.4"
+  },
+  "lint-staged": {
+    "**/*.{js,json}": [
+      "npm run lint:fix"
+    ]
+  }
+}
