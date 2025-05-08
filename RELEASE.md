@@ -9,8 +9,8 @@ Permit GitHub Actions to create and approve pull requests:
 
 1. Go to Actions -> General in the repository settings: (`https://github.com/<user>/<repo>/settings/actions`)
 2. In `Workflow permissions` enable the toggle for
-`Allow GitHub Actions to create and approve pull requests` (it is not required
-to also toggle the `Read and write permission` option)
+   `Allow GitHub Actions to create and approve pull requests` (it is not required
+   to also toggle the `Read and write permission` option)
 
 ## How to release a new version of the package
 

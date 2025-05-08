@@ -164,7 +164,3 @@ console.log(repos)
 const markdown = await ghTrendsFormatted({ language: 'typescript' }, 'markdown')
 console.log(markdown)
 ```
-
-```
-
-```
