@@ -1,4 +1,4 @@
-# gh-trends
+# gh-explorer
 
 ## 0.0.2
 

@@ -1,5 +1,5 @@
 {
-  "name": "gh-trends",
+  "name": "gh-explorer",
   "version": "0.0.2",
   "description": "AI-powered CLI tool for analyzing GitHub trending repositories and URL metadata",
   "type": "module",
@@ -7,7 +7,7 @@
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "bin": {
-    "gh-trends": "./dist/cli.cjs"
+    "gh-explorer": "./dist/cli.cjs"
   },
   "exports": {
     ".": {
@@ -37,7 +37,6 @@
     "url": "https://github.com/zjy365"
   },
   "publishConfig": {
-    "provenance": true,
     "access": "public"
   },
   "license": "Apache-2.0",
@@ -52,13 +51,13 @@
     "ai",
     "developer-tools"
   ],
-  "homepage": "https://github.com/zjy365/gh-trends",
+  "homepage": "https://github.com/zjy365/gh-explorer",
   "bugs": {
-    "url": "https://github.com/zjy365/gh-trends/issues"
+    "url": "https://github.com/zjy365/gh-explorer/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/zjy365/gh-trends"
+    "url": "https://github.com/zjy365/gh-explorer"
   },
   "dependencies": {
     "axios": "^1.4.0",

@@ -29,7 +29,7 @@ export function createCliApp(): Command {
   const program = new Command()
 
   program
-    .name('gittrend')
+    .name('gh-explorer')
     .description('AI-powered CLI tool for analyzing GitHub trending repositories and URLs')
     .version(packageJson.version)
 
