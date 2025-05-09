@@ -17,14 +17,12 @@ GhExplorer combines the power of AI with web scraping to give developers meaning
 ## 📦 Installation
 
 ```bash
-# Install globally
 npm install -g gh-explorer
+
+pnpm add -g gh-explorer
 
 # Or with yarn
 yarn global add gh-explorer
-
-# Or with pnpm
-pnpm add -g gh-explorer
 
 # Or use npx without installing
 npx gh-explorer
@@ -141,14 +139,14 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 ## Development
 
 ```bash
-# Install dependencies
-npm install
+git clone https://github.com/zjy365/gh-explorer.git
+cd gh-explorer
 
-# Run in development mode
-npm run dev
+pnpm install
 
-# Build the project
-npm run build
+pnpm run build
+
+pnpm test
 ```
 
 ## API Usage
