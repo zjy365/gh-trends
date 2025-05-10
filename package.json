@@ -1,6 +1,6 @@
 {
   "name": "gh-explorer",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "AI-powered CLI tool for analyzing GitHub trending repositories and URL metadata",
   "type": "module",
   "main": "./dist/index.cjs",
