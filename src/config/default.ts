@@ -1,25 +1,25 @@
-import { Config } from '../types/config';
+import { Config } from '@/types/config'
 
 /**
- * 默认配置
+ * default config
  */
 export const defaultConfig: Config = {
   github: {
     defaultPeriod: 'daily',
-    defaultLimit: 25,
+    defaultLimit: 25
   },
   output: {
     defaultFormat: 'table',
-    colorEnabled: true,
+    colorEnabled: true
   },
   ai: {
     enabled: false,
-    defaultModel: 'gpt-3.5-turbo',
-    summaryLength: 'medium',
+    defaultModel: 'gpt-4o-mini',
+    summaryLength: 'medium'
   },
   cache: {
     enabled: true,
-    ttl: 3600, // 1小时
-    maxSize: 100,
-  },
-};
+    ttl: 3600, // 1 hour
+    maxSize: 100
+  }
+}

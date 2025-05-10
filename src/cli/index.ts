@@ -5,6 +5,7 @@ import { Command } from 'commander'
 
 import { registerTrendingCommand } from './commands/trending'
 import { registerUrlCommand } from './commands/url'
+import { registerConfigCommand } from './commands/config'
 
 /**
  * Create a CLI application
@@ -34,6 +35,7 @@ export function createCliApp(): Command {
 
   registerTrendingCommand(program)
   registerUrlCommand(program)
+  registerConfigCommand(program)
 
   return program
 }

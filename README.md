@@ -13,6 +13,7 @@ GhExplorer combines the power of AI with web scraping to give developers meaning
 - **URL Analysis**: Extract metadata from any URL with optional AI-powered insights
 - **Multiple Output Formats**: Support for JSON, Table, and Markdown formats
 - **Intelligent Filtering**: Focus on repositories relevant to your interests
+- **AI-Powered Analysis**: Generate summaries, extract key points, and categorize content
 
 ## 📦 Installation
 
@@ -87,7 +88,8 @@ GhExplorer supports a configuration file at `~/.gh-explorer/config.json` where y
   "ai": {
     "enabled": true,
     "apiKey": "your-api-key",
-    "defaultModel": "gpt-3.5-turbo",
+    "baseURL": "https://api.openai.com/v1",
+    "defaultModel": "gpt-4o-mini",
     "summaryLength": "medium"
   },
   "cache": {
@@ -96,6 +98,21 @@ GhExplorer supports a configuration file at `~/.gh-explorer/config.json` where y
     "maxSize": 100
   }
 }
+```
+
+### AI Configuration
+
+To use AI features, you need to set your OpenAI API key and enable AI:
+
+```bash
+# Set your OpenAI API key
+gh-explorer config set ai.apiKey YOUR_API_KEY
+
+# Enable AI features
+gh-explorer config set ai.enabled true
+
+# Optional: Set custom API endpoint
+gh-explorer config set ai.baseURL https://your-api-endpoint
 ```
 
 ## 🗺️ Roadmap
@@ -109,7 +126,7 @@ GhExplorer supports a configuration file at `~/.gh-explorer/config.json` where y
 - [x] Configuration file support
 - [x] Caching system
 - [x] Documentation
-- [ ] Enhanced AI integration with actual API support
+- [x] Enhanced AI integration with OpenAI API support
 - [ ] Repository comparison
 - [ ] Cross-platform notifications
 - [ ] Historical trends tracking
@@ -133,6 +150,7 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 ## 🙏 Acknowledgments
 
 - Built with [Commander.js](https://github.com/tj/commander.js), [Cheerio](https://github.com/cheeriojs/cheerio), [Chalk](https://github.com/chalk/chalk), and [Ora](https://github.com/sindresorhus/ora)
+- AI capabilities powered by [Vercel AI SDK](https://sdk.vercel.ai/docs) and [OpenAI](https://openai.com)
 
 ---
 
@@ -152,7 +170,7 @@ pnpm test
 ## API Usage
 
 ```typescript
-import { ghExplorer, ghExplorerFormatted } from 'gh-explorer'
+import { ghExplorer, ghExplorerFormatted, ghExplorerEnriched } from 'gh-explorer'
 
 // Get trending repos as objects
 const repos = await ghExplorer({ language: 'typescript', since: 'weekly' })
@@ -161,4 +179,8 @@ console.log(repos)
 // Get formatted output
 const markdown = await ghExplorerFormatted({ language: 'typescript' }, 'markdown')
 console.log(markdown)
+
+// Get repos with AI analysis
+const enrichedRepos = await ghExplorerEnriched({ language: 'typescript' })
+console.log(enrichedRepos)
 ```
