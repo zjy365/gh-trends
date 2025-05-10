@@ -36,7 +36,7 @@ export function registerTrendingCommand(program: Command): void {
         .default('json')
     )
     .option('-o, --output <path>', 'Output to file')
-    .option('--ai', 'Enable AI analysis', true)
+    .option('--ai', 'Enable AI analysis', false)
     .option('--no-ai', 'Disable AI analysis')
     .option('--ai-summary <length>', 'AI summary length (short, medium, long)', 'medium')
     .action(async (options) => {

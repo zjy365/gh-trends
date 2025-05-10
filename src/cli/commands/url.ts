@@ -36,6 +36,8 @@ export function registerUrlCommand(program: Command): void {
         .choices(['basic', 'normal', 'deep'])
         .default('normal')
     )
+    .option('--ai', 'Enable AI analysis', false)
+    .option('--no-ai', 'Disable AI analysis')
     .action(async (url, options) => {
       await handleUrlCommand(url, options)
     })
