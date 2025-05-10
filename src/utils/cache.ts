@@ -1,104 +1,104 @@
 interface CacheItem {
-  data: any;
-  expiry: number;
+  data: any
+  expiry: number
 }
 
-// 内存缓存
-const memoryCache: Map<string, CacheItem> = new Map();
+// Memory cache
+const memoryCache: Map<string, CacheItem> = new Map()
 
-// 默认缓存配置
-const DEFAULT_TTL = 3600; // 1小时
-const DEFAULT_MAX_SIZE = 100;
+// Default cache configuration
+const DEFAULT_TTL = 3600 // 1 hour
+const DEFAULT_MAX_SIZE = 100
 
 export class Cache {
-  private enabled: boolean;
-  private maxSize: number;
+  private enabled: boolean
+  private maxSize: number
 
   constructor(enabled = true, maxSize = DEFAULT_MAX_SIZE) {
-    this.enabled = enabled;
-    this.maxSize = maxSize;
+    this.enabled = enabled
+    this.maxSize = maxSize
   }
 
   /**
-   * 从缓存获取数据
-   * @param key 缓存键
-   * @returns 缓存数据或null
+   * Get data from cache
+   * @param key Cache key
+   * @returns Cached data or null
    */
   get(key: string): any | null {
-    if (!this.enabled) return null;
+    if (!this.enabled) return null
 
-    const item = memoryCache.get(key);
-    if (!item) return null;
+    const item = memoryCache.get(key)
+    if (!item) return null
 
-    // 检查是否过期
+    // Check if expired
     if (Date.now() > item.expiry) {
-      memoryCache.delete(key);
-      return null;
+      memoryCache.delete(key)
+      return null
     }
 
-    return item.data;
+    return item.data
   }
 
   /**
-   * 存储数据到缓存
-   * @param key 缓存键
-   * @param data 缓存数据
-   * @param ttlSeconds 缓存时间(秒)
+   * Store data to cache
+   * @param key Cache key
+   * @param data Cache data
+   * @param ttlSeconds Cache time-to-live (seconds)
    */
   set(key: string, data: any, ttlSeconds = DEFAULT_TTL): void {
-    if (!this.enabled) return;
+    if (!this.enabled) return
 
-    // 计算过期时间
-    const expiry = Date.now() + ttlSeconds * 1000;
+    // Calculate expiry time
+    const expiry = Date.now() + ttlSeconds * 1000
 
-    // 保存到缓存
-    memoryCache.set(key, { data, expiry });
+    // Save to cache
+    memoryCache.set(key, { data, expiry })
 
-    // 清理过多的缓存项
+    // Clean up excess cache items
     if (memoryCache.size > this.maxSize) {
-      this.prune();
+      this.prune()
     }
   }
 
   /**
-   * 清除所有缓存
+   * Clear all cache
    */
   clear(): void {
-    memoryCache.clear();
+    memoryCache.clear()
   }
 
   /**
-   * 清理过期缓存
+   * Clean expired cache
    */
   private prune(): void {
-    // 如果缓存大小不超过限制，不需要清理
-    if (memoryCache.size <= this.maxSize) return;
+    // If cache size doesn't exceed limit, no cleanup needed
+    if (memoryCache.size <= this.maxSize) return
 
-    // 获取所有缓存条目，按过期时间排序
-    const entries = Array.from(memoryCache.entries()).sort((a, b) => a[1].expiry - b[1].expiry);
+    // Get all cache entries, sorted by expiry time
+    const entries = Array.from(memoryCache.entries()).sort((a, b) => a[1].expiry - b[1].expiry)
 
-    // 计算需要删除的数量
-    const deleteCount = memoryCache.size - this.maxSize;
+    // Calculate number of entries to delete
+    const deleteCount = memoryCache.size - this.maxSize
 
-    // 删除最早过期的条目
+    // Delete entries that expire earliest
     for (let i = 0; i < deleteCount; i++) {
-      memoryCache.delete(entries[i][0]);
+      memoryCache.delete(entries[i][0])
     }
   }
 }
 
-// 导出默认实例
-export const cache = new Cache();
+// Export default instance
+export const cache = new Cache()
 
-// 简便函数
+// Convenience functions
 export function cacheGet(key: string): any | null {
-  return cache.get(key);
+  return cache.get(key)
 }
 
 export function cacheSet(key: string, data: any, ttlSeconds = DEFAULT_TTL): void {
-  cache.set(key, data, ttlSeconds);
+  cache.set(key, data, ttlSeconds)
 }
 
 export function clearCache(): void {
-  cache.clear();
+  cache.clear()
 }

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
 
-import { run } from './cli/index';
+import { run } from './cli/index'
 
-run();
+run()

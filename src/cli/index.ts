@@ -21,7 +21,6 @@ export function createCliApp(): Command {
       const packagePath = path.join(workingDir, 'package.json')
       packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf8'))
     } catch (_err2) {
-      console.warn('无法读取package.json，使用默认版本')
       packageJson = { version: '0.1.0' }
     }
   }

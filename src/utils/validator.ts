@@ -1,44 +1,44 @@
-import { TrendOptions } from '../types/github';
+import { TrendOptions } from '../types/github'
 
 /**
- * 验证GitHub趋势选项
- * @param options 趋势选项
+ * Validate GitHub trending options
+ * @param options Trending options
  */
 export function validateTrendingOptions(options: TrendOptions): void {
-  // 验证时间周期
+  // Validate time period
   if (options.since && !['daily', 'weekly', 'monthly'].includes(options.since)) {
-    throw new Error('无效的时间周期，请使用 daily、weekly 或 monthly');
+    throw new Error('Invalid time period, please use daily, weekly or monthly')
   }
 
-  // 验证限制数量
+  // Validate limit count
   if (options.limit && (isNaN(options.limit) || options.limit < 1 || options.limit > 100)) {
-    throw new Error('无效的限制数量，请使用 1-100 之间的数字');
+    throw new Error('Invalid limit, please use a number between 1-100')
   }
 }
 
 /**
- * 验证输出格式
- * @param format 输出格式
+ * Validate output format
+ * @param format Output format
  */
 export function validateOutputFormat(format: string): void {
   if (!['json', 'table', 'markdown'].includes(format)) {
-    throw new Error('无效的输出格式，请使用 json、table 或 markdown');
+    throw new Error('Invalid output format, please use json, table or markdown')
   }
 }
 
 /**
- * 验证URL
- * @param url URL字符串
- * @returns 是否是有效的URL
+ * Validate URL
+ * @param url URL string
+ * @returns Whether it is a valid URL
  */
 export function validateUrl(url: string): boolean {
   try {
-    // 创建 URL 对象来验证 URL
-    const urlObj = new URL(url);
+    // Create URL object to validate URL
+    const urlObj = new URL(url)
 
-    // 确保协议是 http 或 https
-    return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+    // Ensure protocol is http or https
+    return urlObj.protocol === 'http:' || urlObj.protocol === 'https:'
   } catch (_error) {
-    return false;
+    return false
   }
 }
