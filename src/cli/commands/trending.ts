@@ -24,7 +24,7 @@ export function registerTrendingCommand(program: Command): void {
     .option('-s, --since <period>', 'Time period (daily, weekly, monthly)', 'daily')
     .option('-n, --limit <number>', 'Limit the number of results', '25')
     .option('-t, --topics <topics>', 'Filter by topics (comma-separated)')
-    .option('-f, --format <format>', 'Output format (json, table, markdown)', 'table')
+    .option('-f, --format <format>', 'Output format (json, table, markdown)', 'json')
     .option('-o, --output <path>', 'Output to file')
     .action(async (options) => {
       await handleTrendingCommand(options)

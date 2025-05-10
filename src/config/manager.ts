@@ -2,38 +2,38 @@ import fs from 'fs'
 import os from 'os'
 import path from 'path'
 
-import { Config, ConfigOptions } from '../types/config'
+import { Config, ConfigOptions } from '@/types/config'
 
 import { defaultConfig } from './default'
 
 /**
- * 配置管理器类
+ * Config Manager
  */
 export class ConfigManager {
   private config: Config
   private configPath: string
 
   constructor(options?: ConfigOptions) {
-    // 默认配置路径
+    // Default config path
     this.configPath = options?.configPath || path.join(os.homedir(), '.gh-explorer', 'config.json')
 
-    // 初始化配置
+    // Initialize config
     this.config = this.loadConfig()
   }
 
   /**
-   * 获取配置
+   * Get config
    */
   getConfig(): Config {
     return this.config
   }
 
   /**
-   * 加载配置文件
+   * Load config file
    */
   private loadConfig(): Config {
     try {
-      // 如果配置文件存在，读取并合并配置
+      // If config file exists, read and merge config
       if (fs.existsSync(this.configPath)) {
         const userConfig = JSON.parse(fs.readFileSync(this.configPath, 'utf-8'))
         return this.mergeConfig(defaultConfig, userConfig)
@@ -42,17 +42,17 @@ export class ConfigManager {
       console.error(`加载配置文件失败: ${error instanceof Error ? error.message : String(error)}`)
     }
 
-    // 返回默认配置
+    // Return default config
     return { ...defaultConfig }
   }
 
   /**
-   * 合并配置
+   * Merge config
    */
   private mergeConfig(defaultConfig: Config, userConfig: Partial<Config>): Config {
     const mergedConfig = { ...defaultConfig }
 
-    // 合并GitHub配置
+    // Merge GitHub config
     if (userConfig.github) {
       mergedConfig.github = {
         ...mergedConfig.github,
@@ -60,7 +60,7 @@ export class ConfigManager {
       }
     }
 
-    // 合并输出配置
+    // Merge output config
     if (userConfig.output) {
       mergedConfig.output = {
         ...mergedConfig.output,
@@ -68,7 +68,7 @@ export class ConfigManager {
       }
     }
 
-    // 合并AI配置
+    // Merge AI config
     if (userConfig.ai) {
       mergedConfig.ai = {
         ...mergedConfig.ai,
@@ -76,7 +76,7 @@ export class ConfigManager {
       }
     }
 
-    // 合并缓存配置
+    // Merge cache config
     if (userConfig.cache) {
       mergedConfig.cache = {
         ...mergedConfig.cache,
@@ -88,11 +88,11 @@ export class ConfigManager {
   }
 }
 
-// 导出默认实例
+// Export default instance
 const configManager = new ConfigManager()
 
 /**
- * 获取配置
+ * Get config
  */
 export function getConfig(): Config {
   return configManager.getConfig()

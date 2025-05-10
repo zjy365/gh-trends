@@ -1,107 +1,114 @@
-import chalk from 'chalk';
-import { Command } from 'commander';
-import ora from 'ora';
+import chalk from 'chalk'
+import { Command } from 'commander'
+import ora from 'ora'
 
-import { getConfig } from '../../config/manager';
-import { formatMetadataOutput } from '../../formatters/formatter';
-import { enrichMetadataWithAI } from '../../services/ai/enricher';
-import { extractMetadata } from '../../services/metadata/extractor';
-import { OutputFormat } from '../../types/output';
-import { saveToFile } from '../../utils/file';
-import { validateUrl } from '../../utils/validator';
+import { getConfig } from '@/config/manager'
+import { formatMetadataOutput } from '@/formatters/formatter'
+import { enrichMetadataWithAI } from '@/services/ai/enricher'
+import { extractMetadata } from '@/services/metadata/extractor'
+import { OutputFormat } from '@/types/output'
+import { saveToFile } from '@/utils/file'
+import { validateUrl } from '@/utils/validator'
+
+interface UrlCommandOptions {
+  format?: OutputFormat
+  output?: string
+  depth?: 'basic' | 'normal' | 'deep'
+  ai?: boolean
+}
 
 /**
- * 注册URL命令
- * @param program Commander实例
+ * Register URL command
+ * @param program Commander instance
  */
 export function registerUrlCommand(program: Command): void {
   program
     .command('url <url>')
-    .description('分析 URL 元数据')
-    .option('-f, --format <format>', '输出格式 (json, table, markdown)', 'table')
-    .option('-o, --output <path>', '输出到文件')
-    .option('-d, --depth <depth>', '分析深度 (basic, normal, deep)', 'normal')
-    .option('--ai', '启用 AI 分析', true)
-    .option('--no-ai', '禁用 AI 分析')
+    .description('Analyze URL metadata')
+    .option('-f, --format <format>', 'Output format (json, table, markdown)', 'json')
+    .option('-o, --output <path>', 'Output to file')
+    .option('-d, --depth <depth>', 'Analysis depth (basic, normal, deep)', 'normal')
+    .option('--ai', 'Enable AI analysis', true)
+    .option('--no-ai', 'Disable AI analysis')
     .action(async (url, options) => {
-      await handleUrlCommand(url, options);
-    });
+      await handleUrlCommand(url, options)
+    })
 }
 
 /**
- * 处理URL命令
- * @param url URL地址
- * @param options 命令选项
+ * Handle URL command
+ * @param url URL address
+ * @param options Command options
  */
-async function handleUrlCommand(url: string, options: any): Promise<void> {
-  const spinner = ora('处理中...').start();
+async function handleUrlCommand(url: string, options: UrlCommandOptions): Promise<void> {
+  const spinner = ora('Processing...').start()
 
   try {
-    // 获取配置和合并选项
-    const config = getConfig();
+    // Get configuration and merge options
+    const config = getConfig()
 
-    // 解析深度
-    let depth: 'basic' | 'normal' | 'deep' = 'normal';
+    // Parse depth with proper type checking
+    let depth: 'basic' | 'normal' | 'deep' = 'normal'
     if (options.depth && ['basic', 'normal', 'deep'].includes(options.depth)) {
-      depth = options.depth as 'basic' | 'normal' | 'deep';
+      depth = options.depth
     }
 
-    // 解析输出格式
-    let format: OutputFormat = config.output.defaultFormat;
+    // Parse output format
+    let format: OutputFormat = config.output.defaultFormat
     if (options.format) {
-      format = options.format as OutputFormat;
+      format = options.format as OutputFormat
     }
 
     const urlOptions = {
       enableAI: options.ai !== false,
       format,
       outputPath: options.output,
-      depth,
-    };
-
-    // URL 验证
-    spinner.text = '验证 URL...';
-    if (!validateUrl(url)) {
-      spinner.fail(chalk.red('无效的 URL 格式'));
-      process.exit(1);
+      depth
     }
 
-    // 内容获取与元数据提取
-    spinner.text = '获取并分析内容...';
+    // URL validation
+    spinner.text = 'Validating URL...'
+    if (!validateUrl(url)) {
+      spinner.fail(chalk.red('Invalid URL format'))
+      process.exit(1)
+    }
+
+    // Content retrieval and metadata extraction
+    spinner.text = 'Retrieving and analyzing content...'
     const metadata = await extractMetadata(url, {
       depth: urlOptions.depth,
       includeImages: urlOptions.depth !== 'basic',
-      timeout: 30000,
-    });
+      timeout: 30000
+    })
 
-    // AI 增强（如果启用）
-    let enrichedMetadata = metadata;
+    // AI enhancement (if enabled)
+    let enrichedMetadata = metadata
     if (urlOptions.enableAI && config.ai.apiKey) {
-      spinner.text = '进行 AI 分析...';
+      spinner.text = 'Performing AI analysis...'
       enrichedMetadata = await enrichMetadataWithAI(metadata, {
         model: config.ai.defaultModel,
-        summaryLength: config.ai.summaryLength,
-      });
+        summaryLength: config.ai.summaryLength
+      })
     }
 
-    // 格式化输出
-    spinner.succeed('分析完成!');
+    // Format output
+    spinner.succeed('Analysis completed!')
     const formattedOutput = formatMetadataOutput(enrichedMetadata, {
       format: urlOptions.format,
       colorEnabled: config.output.colorEnabled,
-      period: '', // 不需要但格式化器需要这个参数
-      language: metadata.language,
-    });
+      period: '', // Not needed but required by the formatter
+      language: metadata.language
+    })
 
-    // 输出结果
+    // Output results
     if (urlOptions.outputPath) {
-      await saveToFile(formattedOutput, urlOptions.outputPath, urlOptions.format);
-      console.log(chalk.green(`结果已保存到: ${urlOptions.outputPath}`));
+      await saveToFile(formattedOutput, urlOptions.outputPath, urlOptions.format)
+      console.log(chalk.green(`Results saved to: ${urlOptions.outputPath}`))
     } else {
-      console.log(formattedOutput);
+      console.log(formattedOutput)
     }
   } catch (error) {
-    spinner.fail(chalk.red(`错误: ${(error as Error).message}`));
-    process.exit(1);
+    spinner.fail(chalk.red(`Error: ${(error as Error).message}`))
+    process.exit(1)
   }
 }
