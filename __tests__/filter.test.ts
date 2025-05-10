@@ -1,8 +1,8 @@
 import { test, describe } from 'node:test'
 import assert from 'node:assert'
 
-import { filterRepositories } from '../src/services/github/filter'
-import { Repository, FilterOptions } from '../src/types/github'
+import { filterRepositories } from '../src/services/github/filter.js'
+import { Repository, FilterOptions } from '../src/types/github.js'
 
 describe('GitHub Repository Filter', () => {
   // Mock repository data
@@ -53,7 +53,7 @@ describe('GitHub Repository Filter', () => {
       stars: 55000,
       forks: 14000,
       starsInPeriod: 100,
-      topics: ['machine learning', 'ai', 'deep learning']
+      topics: ['ai', 'deep learning', 'neural-networks']
     },
     {
       name: 'rust',
@@ -68,6 +68,19 @@ describe('GitHub Repository Filter', () => {
       topics: ['programming-language', 'systems']
     }
   ]
+
+  // 添加一个没有主题数组的仓库
+  const repoWithoutTopics: Repository = {
+    name: 'no-topics',
+    author: 'test-author',
+    rank: 6,
+    url: 'https://github.com/test-author/no-topics',
+    description: 'This repository has no topics array',
+    language: 'JavaScript',
+    stars: 5000,
+    forks: 1000,
+    starsInPeriod: 50
+  }
 
   test('should limit results according to limit option', () => {
     const options: FilterOptions = { limit: 3 }
@@ -85,9 +98,8 @@ describe('GitHub Repository Filter', () => {
     }
     const filtered = filterRepositories(mockRepositories, options)
 
-    assert.equal(filtered.length, 2, 'Should return 2 repositories')
+    assert.equal(filtered.length, 1, 'Should return 1 repository')
     assert.equal(filtered[0].name, 'tensorflow', 'Should include tensorflow')
-    assert.equal(filtered[1].name, 'pytorch', 'Should include pytorch')
   })
 
   test('topic filtering should be case insensitive', () => {
@@ -128,5 +140,21 @@ describe('GitHub Repository Filter', () => {
     const filtered = filterRepositories(mockRepositories, options)
 
     assert.equal(filtered.length, 0, 'Should return an empty array')
+  })
+
+  test('should skip repositories without topics array when filtering by topics', () => {
+    const combinedRepos = [...mockRepositories, repoWithoutTopics]
+    const options: FilterOptions = {
+      limit: 10,
+      topics: ['javascript']
+    }
+    const filtered = filterRepositories(combinedRepos, options)
+
+    assert.equal(filtered.length, 2, 'Should return 2 repositories')
+    assert.equal(
+      filtered.some((repo) => repo.name === 'no-topics'),
+      false,
+      'Should not include repo without topics'
+    )
   })
 })

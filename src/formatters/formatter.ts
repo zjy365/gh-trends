@@ -1,9 +1,10 @@
-import chalk from 'chalk';
-import { table } from 'table';
+import chalk from 'chalk'
+import { table } from 'table'
 
-import { Repository } from '../types/github';
-import { Metadata } from '../types/metadata';
-import { FormatOptions } from '../types/output';
+import { Repository } from '../types/github'
+import { Metadata } from '../types/metadata'
+import { FormatOptions } from '../types/output'
+import { createTerminalLink } from '../utils/tools'
 
 /**
  * formatter output
@@ -14,12 +15,12 @@ import { FormatOptions } from '../types/output';
 export function formatOutput(repositories: Repository[], options: FormatOptions): string {
   switch (options.format) {
     case 'json':
-      return formatJson(repositories);
+      return formatJson(repositories)
     case 'markdown':
-      return formatMarkdown(repositories, options);
+      return formatMarkdown(repositories, options)
     case 'table':
     default:
-      return formatTable(repositories, options);
+      return formatTable(repositories, options)
   }
 }
 
@@ -32,12 +33,12 @@ export function formatOutput(repositories: Repository[], options: FormatOptions)
 export function formatMetadataOutput(metadata: Metadata, options: FormatOptions): string {
   switch (options.format) {
     case 'json':
-      return formatMetadataJson(metadata);
+      return formatMetadataJson(metadata)
     case 'markdown':
-      return formatMetadataMarkdown(metadata);
+      return formatMetadataMarkdown(metadata)
     case 'table':
     default:
-      return formatMetadataTable(metadata, options);
+      return formatMetadataTable(metadata, options)
   }
 }
 
@@ -47,7 +48,7 @@ export function formatMetadataOutput(metadata: Metadata, options: FormatOptions)
  * @returns JSON string
  */
 function formatJson(repositories: Repository[]): string {
-  return JSON.stringify(repositories, null, 2);
+  return JSON.stringify(repositories, null, 2)
 }
 
 /**
@@ -56,10 +57,10 @@ function formatJson(repositories: Repository[]): string {
  * @returns JSON string
  */
 function formatMetadataJson(metadata: Metadata): string {
-  const outputMetadata = { ...metadata };
-  delete outputMetadata.contentPreview;
+  const outputMetadata = { ...metadata }
+  delete outputMetadata.contentPreview
 
-  return JSON.stringify(outputMetadata, null, 2);
+  return JSON.stringify(outputMetadata, null, 2)
 }
 
 /**
@@ -69,7 +70,7 @@ function formatMetadataJson(metadata: Metadata): string {
  * @returns
  */
 function formatTable(repositories: Repository[], options: FormatOptions): string {
-  const { colorEnabled, period, language } = options;
+  const { colorEnabled, period, language } = options
 
   const header = [
     colorEnabled ? chalk.bold('#') : '#',
@@ -78,21 +79,20 @@ function formatTable(repositories: Repository[], options: FormatOptions): string
     colorEnabled ? chalk.bold('Language') : 'Language',
     colorEnabled ? chalk.bold('Stars') : 'Stars',
     colorEnabled ? chalk.bold('New Stars') : 'New Stars',
-    colorEnabled ? chalk.bold('Forks') : 'Forks',
-  ];
+    colorEnabled ? chalk.bold('Forks') : 'Forks'
+  ]
 
   // Prepare data rows
   const rows = repositories.map((repo) => {
-    const repoName = colorEnabled
-      ? chalk.blue(`${repo.author || ''}/${repo.name}`)
-      : `${repo.author || ''}/${repo.name}`;
+    const repoText = `${repo.author || ''}/${repo.name}`
+    const repoName = colorEnabled ? chalk.blue(repoText) : repoText
 
-    const description = repo.description ? truncate(repo.description, 60) : '';
+    const description = repo.description ? truncate(repo.description, 60) : ''
 
-    const stars = formatNumber(repo.stars);
+    const stars = formatNumber(repo.stars)
     const starsInPeriod = colorEnabled
       ? chalk.green(`+${formatNumber(repo.starsInPeriod || 0)}`)
-      : `+${formatNumber(repo.starsInPeriod || 0)}`;
+      : `+${formatNumber(repo.starsInPeriod || 0)}`
 
     return [
       repo.rank.toString(),
@@ -101,12 +101,12 @@ function formatTable(repositories: Repository[], options: FormatOptions): string
       repo.language || '-',
       stars,
       starsInPeriod,
-      formatNumber(repo.forks),
-    ];
-  });
+      formatNumber(repo.forks)
+    ]
+  })
 
   // generate table
-  const data = [header, ...rows];
+  const data = [header, ...rows]
   const config = {
     border: {
       topBody: '─',
@@ -123,24 +123,28 @@ function formatTable(repositories: Repository[], options: FormatOptions): string
       joinBody: '─',
       joinLeft: '├',
       joinRight: '┤',
-      joinJoin: '┼',
+      joinJoin: '┼'
     },
     columns: {
       0: { width: 6 },
       1: { width: 30 },
       2: { width: 60 },
       3: { width: 15 },
-      4: { width: 10 },
+      4: { width: 8 },
       5: { width: 10 },
-      6: { width: 10 },
-    },
-  };
+      6: { width: 8 }
+    }
+  }
 
   const title = colorEnabled
-    ? chalk.yellow(`🔥 GitHub Trending Repositories${language ? ` (${language})` : ''} - ${getPeriodText(period)}`)
-    : `GitHub Trending Repositories${language ? ` (${language})` : ''} - ${getPeriodText(period)}`;
+    ? chalk.yellow(
+        `🔥 GitHub Trending Repositories${language ? ` (${language})` : ''} - ${getPeriodText(
+          period
+        )}`
+      )
+    : `GitHub Trending Repositories${language ? ` (${language})` : ''} - ${getPeriodText(period)}`
 
-  return `\n${title}\n\n${table(data, config)}\n`;
+  return `\n${title}\n\n${table(data, config)}\n`
 }
 
 /**
@@ -150,77 +154,88 @@ function formatTable(repositories: Repository[], options: FormatOptions): string
  * @returns table string
  */
 function formatMetadataTable(metadata: Metadata, options: FormatOptions): string {
-  const { colorEnabled } = options;
+  const { colorEnabled } = options
 
   // prepare table data
-  const rows: string[][] = [];
+  const rows: string[][] = []
 
   // add basic information
-  rows.push([colorEnabled ? chalk.bold('URL') : 'URL', metadata.url]);
+  rows.push([colorEnabled ? chalk.bold('URL') : 'URL', metadata.url])
 
-  rows.push([colorEnabled ? chalk.bold('Title') : 'Title', metadata.title || 'No Title']);
+  rows.push([colorEnabled ? chalk.bold('Title') : 'Title', metadata.title || 'No Title'])
 
   rows.push([
     colorEnabled ? chalk.bold('Description') : 'Description',
-    truncate(metadata.description || 'No Description', 100),
-  ]);
+    truncate(metadata.description || 'No Description', 100)
+  ])
 
   // add other valid information
   if (metadata.author) {
-    rows.push([colorEnabled ? chalk.bold('Author') : 'Author', metadata.author]);
+    rows.push([colorEnabled ? chalk.bold('Author') : 'Author', metadata.author])
   }
 
   if (metadata.publisher) {
-    rows.push([colorEnabled ? chalk.bold('Publisher') : 'Publisher', metadata.publisher]);
+    rows.push([colorEnabled ? chalk.bold('Publisher') : 'Publisher', metadata.publisher])
   }
 
   if (metadata.language) {
-    rows.push([colorEnabled ? chalk.bold('Language') : 'Language', metadata.language]);
+    rows.push([colorEnabled ? chalk.bold('Language') : 'Language', metadata.language])
   }
 
   if (metadata.type) {
-    rows.push([colorEnabled ? chalk.bold('Type') : 'Type', metadata.type]);
+    rows.push([colorEnabled ? chalk.bold('Type') : 'Type', metadata.type])
   }
 
   if (metadata.published) {
-    rows.push([colorEnabled ? chalk.bold('Published') : 'Published', metadata.published.toISOString().split('T')[0]]);
+    rows.push([
+      colorEnabled ? chalk.bold('Published') : 'Published',
+      metadata.published.toISOString().split('T')[0]
+    ])
   }
 
   if (metadata.modified) {
-    rows.push([colorEnabled ? chalk.bold('Modified') : 'Modified', metadata.modified.toISOString().split('T')[0]]);
+    rows.push([
+      colorEnabled ? chalk.bold('Modified') : 'Modified',
+      metadata.modified.toISOString().split('T')[0]
+    ])
   }
 
   if (metadata.keywords && metadata.keywords.length) {
-    rows.push([colorEnabled ? chalk.bold('Keywords') : 'Keywords', metadata.keywords.join(', ')]);
+    rows.push([colorEnabled ? chalk.bold('Keywords') : 'Keywords', metadata.keywords.join(', ')])
   }
 
   if (metadata.tags && metadata.tags.length) {
-    rows.push([colorEnabled ? chalk.bold('Tags') : 'Tags', metadata.tags.join(', ')]);
+    rows.push([colorEnabled ? chalk.bold('Tags') : 'Tags', metadata.tags.join(', ')])
   }
 
   // Add AI enhanced information
   if (metadata.aiSummary) {
-    rows.push([colorEnabled ? chalk.bold('AI Summary') : 'AI Summary', metadata.aiSummary]);
+    rows.push([colorEnabled ? chalk.bold('AI Summary') : 'AI Summary', metadata.aiSummary])
   }
 
   if (metadata.category) {
-    rows.push([colorEnabled ? chalk.bold('Category') : 'Category', metadata.category]);
+    rows.push([colorEnabled ? chalk.bold('Category') : 'Category', metadata.category])
   }
 
   if (metadata.readingTime) {
-    rows.push([colorEnabled ? chalk.bold('Reading Time') : 'Reading Time', ` ${metadata.readingTime} minutes`]);
+    rows.push([
+      colorEnabled ? chalk.bold('Reading Time') : 'Reading Time',
+      ` ${metadata.readingTime} minutes`
+    ])
   }
 
   if (metadata.keyPoints && metadata.keyPoints.length) {
-    const keyPointsText = metadata.keyPoints.map((point, index) => `${index + 1}. ${point}`).join('\n');
+    const keyPointsText = metadata.keyPoints
+      .map((point, index) => `${index + 1}. ${point}`)
+      .join('\n')
 
-    rows.push([colorEnabled ? chalk.bold('Key Points') : 'Key Points', keyPointsText]);
+    rows.push([colorEnabled ? chalk.bold('Key Points') : 'Key Points', keyPointsText])
   }
 
   // generate table
-  const title = colorEnabled ? chalk.yellow('📄 URL Metadata Analysis') : 'URL Metadata Analysis';
+  const title = colorEnabled ? chalk.yellow('📄 URL Metadata Analysis') : 'URL Metadata Analysis'
 
-  return `\n${title}\n\n${table(rows)}\n`;
+  return `\n${title}\n\n${table(rows)}\n`
 }
 
 /**
@@ -230,45 +245,49 @@ function formatMetadataTable(metadata: Metadata, options: FormatOptions): string
  * @returns markdown string
  */
 function formatMarkdown(repositories: Repository[], options: FormatOptions): string {
-  const { period, language } = options;
+  const { period, language } = options
 
   // title
-  let md = `# 🔥 GitHub Trending Repositories${language ? ` (${language})` : ''} - ${getPeriodText(period)}\n\n`;
+  let md = `# 🔥 GitHub Trending Repositories${language ? ` (${language})` : ''} - ${getPeriodText(
+    period
+  )}\n\n`
 
   repositories.forEach((repo) => {
-    md += `## ${repo.rank}. [${repo.author || ''}/${repo.name}](${repo.url})\n\n`;
+    md += `## ${repo.rank}. [${repo.author || ''}/${repo.name}](${repo.url})\n\n`
 
     if (repo.description) {
-      md += `${repo.description}\n\n`;
+      md += `${repo.description}\n\n`
     }
 
-    md += `- **Language:** ${repo.language || 'Not Specified'}\n`;
-    md += `- **⭐ Stars:** ${formatNumber(repo.stars)} (New: +${formatNumber(repo.starsInPeriod || 0)})\n`;
-    md += `- **🍴 Forks:** ${formatNumber(repo.forks)}\n`;
+    md += `- **Language:** ${repo.language || 'Not Specified'}\n`
+    md += `- **⭐ Stars:** ${formatNumber(repo.stars)} (New: +${formatNumber(
+      repo.starsInPeriod || 0
+    )})\n`
+    md += `- **🍴 Forks:** ${formatNumber(repo.forks)}\n`
 
     // Add AI enhanced content (if available)
     if (repo.aiSummary) {
-      md += `\n### AI Analysis Summary\n\n${repo.aiSummary}\n`;
+      md += `\n### AI Analysis Summary\n\n${repo.aiSummary}\n`
     }
 
     if (repo.keyFeatures && repo.keyFeatures.length > 0) {
-      md += '\n### Key Features\n\n';
+      md += '\n### Key Features\n\n'
       repo.keyFeatures.forEach((feature) => {
-        md += `- ${feature}\n`;
-      });
+        md += `- ${feature}\n`
+      })
     }
 
     if (repo.useCases && repo.useCases.length > 0) {
-      md += '\n### Use Cases\n\n';
+      md += '\n### Use Cases\n\n'
       repo.useCases.forEach((useCase) => {
-        md += `- ${useCase}\n`;
-      });
+        md += `- ${useCase}\n`
+      })
     }
 
-    md += '\n---\n\n';
-  });
+    md += '\n---\n\n'
+  })
 
-  return md;
+  return md
 }
 
 /**
@@ -278,87 +297,87 @@ function formatMarkdown(repositories: Repository[], options: FormatOptions): str
  */
 function formatMetadataMarkdown(metadata: Metadata): string {
   // Title
-  let md = '# URL Metadata Analysis\n\n';
+  let md = '# URL Metadata Analysis\n\n'
 
   // Basic information
-  md += '## Basic Information\n\n';
-  md += `- **URL:** ${metadata.url}\n`;
-  md += `- **Title:** ${metadata.title || 'No Title'}\n`;
-  md += `- **Description:** ${metadata.description || 'No Description'}\n`;
+  md += '## Basic Information\n\n'
+  md += `- **URL:** ${metadata.url}\n`
+  md += `- **Title:** ${metadata.title || 'No Title'}\n`
+  md += `- **Description:** ${metadata.description || 'No Description'}\n`
 
   if (metadata.author) {
-    md += `- **Author:** ${metadata.author}\n`;
+    md += `- **Author:** ${metadata.author}\n`
   }
 
   if (metadata.publisher) {
-    md += `- **Publisher:** ${metadata.publisher}\n`;
+    md += `- **Publisher:** ${metadata.publisher}\n`
   }
 
   if (metadata.language) {
-    md += `- **Language:** ${metadata.language}\n`;
+    md += `- **Language:** ${metadata.language}\n`
   }
 
   if (metadata.type) {
-    md += `- **Type:** ${metadata.type}\n`;
+    md += `- **Type:** ${metadata.type}\n`
   }
 
   if (metadata.published) {
-    md += `- **Published Date:** ${metadata.published.toISOString().split('T')[0]}\n`;
+    md += `- **Published Date:** ${metadata.published.toISOString().split('T')[0]}\n`
   }
 
   if (metadata.modified) {
-    md += `- **Modified Date:** ${metadata.modified.toISOString().split('T')[0]}\n`;
+    md += `- **Modified Date:** ${metadata.modified.toISOString().split('T')[0]}\n`
   }
 
   // Keywords and tags
   if (metadata.keywords && metadata.keywords.length) {
-    md += '\n## Keywords\n\n';
-    md += metadata.keywords.join(', ') + '\n';
+    md += '\n## Keywords\n\n'
+    md += metadata.keywords.join(', ') + '\n'
   }
 
   if (metadata.tags && metadata.tags.length) {
-    md += '\n## Tags\n\n';
-    md += metadata.tags.join(', ') + '\n';
+    md += '\n## Tags\n\n'
+    md += metadata.tags.join(', ') + '\n'
   }
 
   // AI enhanced information
   if (metadata.aiSummary || (metadata.keyPoints && metadata.keyPoints.length)) {
-    md += '\n## AI Analysis\n\n';
+    md += '\n## AI Analysis\n\n'
 
     if (metadata.aiSummary) {
-      md += `### Summary\n\n${metadata.aiSummary}\n\n`;
+      md += `### Summary\n\n${metadata.aiSummary}\n\n`
     }
 
     if (metadata.category) {
-      md += `**Category:** ${metadata.category}\n\n`;
+      md += `**Category:** ${metadata.category}\n\n`
     }
 
     if (metadata.readingTime) {
-      md += `**Estimated Reading Time:** About ${metadata.readingTime} minutes\n\n`;
+      md += `**Estimated Reading Time:** About ${metadata.readingTime} minutes\n\n`
     }
 
     if (metadata.keyPoints && metadata.keyPoints.length) {
-      md += '### Key Points\n\n';
+      md += '### Key Points\n\n'
       metadata.keyPoints.forEach((point, index) => {
-        md += `${index + 1}. ${point}\n`;
-      });
+        md += `${index + 1}. ${point}\n`
+      })
     }
   }
 
   // Available images
   if (metadata.image || metadata.icon) {
-    md += '\n## Images\n\n';
+    md += '\n## Images\n\n'
 
     if (metadata.image) {
-      md += `- **Main Image:** ${metadata.image}\n`;
+      md += `- **Main Image:** ${metadata.image}\n`
     }
 
     if (metadata.icon) {
-      md += `- **Icon:** ${metadata.icon}\n`;
+      md += `- **Icon:** ${metadata.icon}\n`
     }
   }
 
-  return md;
+  return md
 }
 
 /**
@@ -369,13 +388,13 @@ function formatMetadataMarkdown(metadata: Metadata): string {
 function getPeriodText(period: string): string {
   switch (period) {
     case 'daily':
-      return 'Today';
+      return 'Today'
     case 'weekly':
-      return 'This Week';
+      return 'This Week'
     case 'monthly':
-      return 'This Month';
+      return 'This Month'
     default:
-      return period;
+      return period
   }
 }
 
@@ -386,9 +405,9 @@ function getPeriodText(period: string): string {
  */
 function formatNumber(num: number): string {
   if (num >= 1000) {
-    return (num / 1000).toFixed(1) + 'k';
+    return (num / 1000).toFixed(1) + 'k'
   }
-  return num.toString();
+  return num.toString()
 }
 
 /**
@@ -398,6 +417,6 @@ function formatNumber(num: number): string {
  * @returns truncated text
  */
 function truncate(text: string, maxLength: number): string {
-  if (text.length <= maxLength) return text;
-  return text.slice(0, maxLength - 3) + '...';
+  if (text.length <= maxLength) return text
+  return text.slice(0, maxLength - 3) + '...'
 }
