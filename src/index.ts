@@ -4,7 +4,7 @@
 
 // Import services and types
 import { formatOutput } from './formatters/formatter'
-import { enrichMetadataWithAI } from './services/ai/enricher'
+import { enrichMetadataWithAI, enrichWithAI } from './services/ai'
 import { extractMetadata } from './services/metadata/extractor'
 import { getTrendingRepos } from './services/github/scraper'
 import { Repository, TrendOptions } from './types/github'
@@ -15,7 +15,7 @@ import { Metadata, ExtractionOptions, MetadataEnrichOptions } from './types/meta
 export { Metadata, ExtractionOptions, MetadataEnrichOptions } from './types/metadata'
 export { TrendOptions, OutputFormat } from './types/index'
 export { Repository } from './types/github'
-export { enrichMetadataWithAI } from './services/ai/enricher'
+export { enrichMetadataWithAI, enrichWithAI } from './services/ai'
 export { extractMetadata } from './services/metadata/extractor'
 export { formatOutput, formatMetadataOutput } from './formatters/formatter'
 export { getTrendingRepos } from './services/github/scraper'
@@ -80,15 +80,30 @@ export async function urlMetadataEnriched(
   extractOptions: Partial<ExtractionOptions> = {},
   enrichOptions: Partial<MetadataEnrichOptions> = {}
 ): Promise<Metadata> {
-  // Get basic metadata
   const metadata = await urlMetadata(url, extractOptions)
 
-  // Set default options
   const metadataEnrichOptions: MetadataEnrichOptions = {
-    model: enrichOptions.model || 'gpt-3.5-turbo',
     summaryLength: enrichOptions.summaryLength || 'medium'
   }
 
-  // Use AI to enhance
   return enrichMetadataWithAI(metadata, metadataEnrichOptions)
+}
+
+/**
+ * Get GitHub trending repositories with AI enhancement
+ * @param options Trend options
+ * @param enrichOptions AI enrichment options
+ * @returns Promise<Repository[]> Enhanced trending repositories data
+ */
+export async function ghExplorerEnriched(
+  options: TrendOptions = {},
+  enrichOptions: Partial<MetadataEnrichOptions> = {}
+): Promise<Repository[]> {
+  const repositories = await getTrendingRepos(options)
+
+  const aiOptions: MetadataEnrichOptions = {
+    summaryLength: enrichOptions.summaryLength || 'medium'
+  }
+
+  return enrichWithAI(repositories, aiOptions)
 }

@@ -213,8 +213,8 @@ function formatMetadataTable(metadata: Metadata, options: FormatOptions): string
     rows.push([colorEnabled ? chalk.bold('AI Summary') : 'AI Summary', metadata.aiSummary])
   }
 
-  if (metadata.category) {
-    rows.push([colorEnabled ? chalk.bold('Category') : 'Category', metadata.category])
+  if (metadata.category && metadata.category.length) {
+    rows.push([colorEnabled ? chalk.bold('Category') : 'Category', metadata.category.join(', ')])
   }
 
   if (metadata.readingTime) {

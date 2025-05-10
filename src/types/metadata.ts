@@ -1,7 +1,9 @@
-export interface Metadata {
+import { AIAnalysisResult } from './ai'
+
+export type Metadata = {
   url: string
-  title: string
-  description: string
+  title?: string
+  description?: string
   image?: string
   icon?: string
   author?: string
@@ -13,12 +15,8 @@ export interface Metadata {
   published?: Date
   modified?: Date
   contentPreview?: string // Content fragment for AI analysis
-  // AI enhanced fields
-  aiSummary?: string
-  keyPoints?: string[]
-  category?: string
-  readingTime?: number
-}
+  readingTime?: number // Estimated reading time in minutes
+} & Partial<AIAnalysisResult>
 
 export interface ExtractionOptions {
   depth: 'basic' | 'normal' | 'deep'
@@ -27,6 +25,5 @@ export interface ExtractionOptions {
 }
 
 export interface MetadataEnrichOptions {
-  model: string
   summaryLength: 'short' | 'medium' | 'long'
 }

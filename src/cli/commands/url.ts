@@ -4,7 +4,7 @@ import ora from 'ora'
 
 import { getConfig } from '@/config/manager'
 import { formatMetadataOutput } from '@/formatters/formatter'
-import { enrichMetadataWithAI } from '@/services/ai/enricher'
+import { enrichMetadataWithAI } from '@/services/ai'
 import { extractMetadata } from '@/services/metadata/extractor'
 import { OutputFormat } from '@/types/output'
 import { saveToFile } from '@/utils/file'
@@ -86,7 +86,6 @@ async function handleUrlCommand(url: string, options: UrlCommandOptions): Promis
     if (urlOptions.enableAI && config.ai.apiKey) {
       spinner.text = 'Performing AI analysis...'
       enrichedMetadata = await enrichMetadataWithAI(metadata, {
-        model: config.ai.defaultModel,
         summaryLength: config.ai.summaryLength
       })
     }
@@ -96,7 +95,7 @@ async function handleUrlCommand(url: string, options: UrlCommandOptions): Promis
     const formattedOutput = formatMetadataOutput(enrichedMetadata, {
       format: urlOptions.format,
       colorEnabled: config.output.colorEnabled,
-      period: '', // Not needed but required by the formatter
+      period: '',
       language: metadata.language
     })
 

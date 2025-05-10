@@ -1,5 +1,5 @@
 ---
-'gh-explorer': minor
+'gh-explorer': patch
 ---
 
 URL Metadata Extractor Enhancement
