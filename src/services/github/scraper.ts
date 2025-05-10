@@ -5,18 +5,17 @@ import { Repository, TrendOptions } from '../../types/github'
 import { cacheGet, cacheSet } from '../../utils/cache'
 
 /**
- * 获取GitHub趋势仓库
- * @param options 趋势选项
- * @returns Promise<Repository[]> 趋势仓库列表
+ * Get GitHub trending repositories
+ * @param options Trending options
+ * @returns Promise<Repository[]> Trending repositories list
  */
 export async function getTrendingRepos(options: TrendOptions): Promise<Repository[]> {
   const { language, since = 'daily' } = options
 
-  // 构建缓存键
   const cacheKey = `trending:${language || 'all'}:${since}`
 
-  // 检查缓存
   const cachedData = cacheGet(cacheKey)
+  console.log(cachedData, 'cachedData', cacheKey)
   if (cachedData) {
     return cachedData as Repository[]
   }
@@ -36,10 +35,8 @@ export async function getTrendingRepos(options: TrendOptions): Promise<Repositor
       }
     })
 
-    // 解析HTML
     const repositories = parseGitHubTrendingHtml(response.data)
 
-    // 缓存结果
     cacheSet(cacheKey, repositories, 3600) // 缓存一小时
 
     return repositories

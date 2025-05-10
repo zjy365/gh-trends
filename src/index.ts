@@ -6,9 +6,9 @@
 import { formatOutput } from './formatters/formatter'
 import { enrichMetadataWithAI } from './services/ai/enricher'
 import { extractMetadata } from './services/metadata/extractor'
-import { TrendService } from './services/trend.service'
-import { Repository } from './types/github'
-import { TrendOptions, OutputFormat } from './types/index'
+import { getTrendingRepos } from './services/github/scraper'
+import { Repository, TrendOptions } from './types/github'
+import { OutputFormat } from './types/index'
 import { Metadata, ExtractionOptions, MetadataEnrichOptions } from './types/metadata'
 
 // Export types and services
@@ -18,7 +18,7 @@ export { Repository } from './types/github'
 export { enrichMetadataWithAI } from './services/ai/enricher'
 export { extractMetadata } from './services/metadata/extractor'
 export { formatOutput, formatMetadataOutput } from './formatters/formatter'
-export { TrendService } from './services/trend.service'
+export { getTrendingRepos } from './services/github/scraper'
 
 /**
  * Get GitHub trending repositories data
@@ -26,8 +26,7 @@ export { TrendService } from './services/trend.service'
  * @returns Promise<Repository[]> Trending repositories data
  */
 export async function ghExplorer(options: TrendOptions = {}): Promise<Repository[]> {
-  const trendService = new TrendService()
-  return trendService.fetchTrends(options)
+  return getTrendingRepos(options)
 }
 
 /**
@@ -40,11 +39,8 @@ export async function ghExplorerFormatted(
   options: TrendOptions = {},
   format: OutputFormat = 'json'
 ): Promise<string> {
-  const trendService = new TrendService()
+  const repositories = await getTrendingRepos(options)
 
-  const repositories = await trendService.fetchTrends(options)
-
-  // 使用函数式格式化器
   return formatOutput(repositories, {
     format,
     colorEnabled: true,

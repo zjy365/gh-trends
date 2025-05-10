@@ -20,6 +20,7 @@
     "dist"
   ],
   "scripts": {
+    "dev": "tsc --watch",
     "build": "tsc && tsup",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
