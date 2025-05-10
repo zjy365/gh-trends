@@ -69,7 +69,6 @@ describe('GitHub Repository Filter', () => {
     }
   ]
 
-  // 添加一个没有主题数组的仓库
   const repoWithoutTopics: Repository = {
     name: 'no-topics',
     author: 'test-author',
