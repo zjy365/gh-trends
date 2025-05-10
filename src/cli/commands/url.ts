@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import { Command } from 'commander'
+import { Command, Option } from 'commander'
 import ora from 'ora'
 
 import { getConfig } from '@/config/manager'
@@ -25,11 +25,17 @@ export function registerUrlCommand(program: Command): void {
   program
     .command('url <url>')
     .description('Analyze URL metadata')
-    .option('-f, --format <format>', 'Output format (json, table, markdown)', 'json')
+    .addOption(
+      new Option('-f, --format <format>', 'Output format')
+        .choices(['json', 'table', 'markdown'])
+        .default('json')
+    )
     .option('-o, --output <path>', 'Output to file')
-    .option('-d, --depth <depth>', 'Analysis depth (basic, normal, deep)', 'normal')
-    .option('--ai', 'Enable AI analysis', true)
-    .option('--no-ai', 'Disable AI analysis')
+    .addOption(
+      new Option('-d, --depth <depth>', 'Analysis depth')
+        .choices(['basic', 'normal', 'deep'])
+        .default('normal')
+    )
     .action(async (url, options) => {
       await handleUrlCommand(url, options)
     })
