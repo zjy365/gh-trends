@@ -1,5 +1,11 @@
 # gh-explorer
 
+## 1.0.1
+
+### Patch Changes
+
+- 8485ac4: fix: Failed to get trending data: Subject parameter value width cannot be greater than the container width.
+
 ## 1.0.0
 
 ### Major Changes
