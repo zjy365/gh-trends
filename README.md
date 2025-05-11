@@ -120,13 +120,12 @@ gh-explorer config set ai.baseURL https://your-api-endpoint
 - [x] Project structure with tsup
 - [x] GitHub trending page scraper
 - [x] URL metadata extraction service
-- [x] Basic AI content summarization (simulated)
+- [x] AI integration with multiple LLM providers
 - [x] CLI interface with Commander.js
 - [x] Multiple output formats (JSON, Table, Markdown)
 - [x] Configuration file support
 - [x] Caching system
 - [x] Documentation
-- [x] Enhanced AI integration with OpenAI API support
 - [ ] Repository comparison
 - [ ] Cross-platform notifications
 - [ ] Historical trends tracking

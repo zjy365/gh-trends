@@ -126,13 +126,13 @@ function formatTable(repositories: Repository[], options: FormatOptions): string
       joinJoin: '┼'
     },
     columns: {
-      0: { width: 6 },
+      0: { width: 3 },
       1: { width: 30 },
-      2: { width: 60 },
-      3: { width: 15 },
+      2: { width: 45 },
+      3: { width: 12 },
       4: { width: 8 },
       5: { width: 10 },
-      6: { width: 8 }
+      6: { width: 7 }
     }
   }
 
@@ -417,6 +417,7 @@ function formatNumber(num: number): string {
  * @returns truncated text
  */
 function truncate(text: string, maxLength: number): string {
+  if (!text || typeof text !== 'string') return String(text || '')
   if (text.length <= maxLength) return text
   return text.slice(0, maxLength - 3) + '...'
 }
