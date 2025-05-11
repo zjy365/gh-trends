@@ -149,7 +149,7 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 ## 🙏 Acknowledgments
 
 - Built with [Commander.js](https://github.com/tj/commander.js), [Cheerio](https://github.com/cheeriojs/cheerio), [Chalk](https://github.com/chalk/chalk), and [Ora](https://github.com/sindresorhus/ora)
-- AI capabilities powered by [Vercel AI SDK](https://sdk.vercel.ai/docs) and [OpenAI](https://openai.com)
+- AI capabilities powered by [Vercel AI SDK](https://sdk.vercel.ai/docs)
 
 ---
 
