@@ -1,5 +1,11 @@
 # gh-explorer
 
+## 1.0.2
+
+### Patch Changes
+
+- b1e32ca: fix truncate
+
 ## 1.0.1
 
 ### Patch Changes
