@@ -87,7 +87,9 @@ function formatTable(repositories: Repository[], options: FormatOptions): string
     const repoText = `${repo.author || ''}/${repo.name}`
     const repoName = colorEnabled ? chalk.blue(repoText) : repoText
 
-    const description = repo.description ? truncate(repo.description, 60) : ''
+    const truncatedRepoName = truncate(repoName, 28)
+    const description = repo.description ? truncate(repo.description, 43) : ''
+    const language = repo.language ? truncate(repo.language, 10) : '-'
 
     const stars = formatNumber(repo.stars)
     const starsInPeriod = colorEnabled
@@ -96,9 +98,9 @@ function formatTable(repositories: Repository[], options: FormatOptions): string
 
     return [
       repo.rank.toString(),
-      repoName,
+      truncatedRepoName,
       description,
-      repo.language || '-',
+      language,
       stars,
       starsInPeriod,
       formatNumber(repo.forks)
@@ -131,8 +133,12 @@ function formatTable(repositories: Repository[], options: FormatOptions): string
       2: { width: 45 },
       3: { width: 12 },
       4: { width: 8 },
-      5: { width: 10 },
-      6: { width: 7 }
+      5: { width: 12 },
+      6: { width: 8 }
+    },
+    columnDefault: {
+      wrapWord: true,
+      truncate: 100
     }
   }
 
@@ -418,6 +424,23 @@ function formatNumber(num: number): string {
  */
 function truncate(text: string, maxLength: number): string {
   if (!text || typeof text !== 'string') return String(text || '')
-  if (text.length <= maxLength) return text
+
+  const stripAnsi = (str: string) => str.replace(/\u001b\[[0-9;]*m/g, '')
+  const actualLength = stripAnsi(text).length
+
+  if (actualLength <= maxLength) return text
+
+  if (text.includes('\u001b[')) {
+    const plainText = stripAnsi(text)
+    const truncatedPlain = plainText.substring(0, maxLength - 3) + '...'
+
+    const colorStart = text.match(/^(\u001b\[[0-9;]*m)/)?.[1] || ''
+    const colorEnd = text.match(/(\u001b\[[0-9;]*m)$/)?.[1] || ''
+
+    if (colorStart) {
+      return colorStart + truncatedPlain + (colorEnd || '\u001b[0m')
+    }
+  }
+
   return text.slice(0, maxLength - 3) + '...'
 }
